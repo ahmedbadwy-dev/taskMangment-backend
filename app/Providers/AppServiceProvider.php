@@ -20,6 +20,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->environment('production') && !app()->runningInConsole()) {
+            try {
+                if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                }
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
         Post::observe(PostObserver::class);
      
 }
