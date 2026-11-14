@@ -11,6 +11,7 @@ use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Policies\PostPolicy;
 class PostController extends Controller
 {
     /**
@@ -55,6 +56,7 @@ return(PostResource::make($post)->additional(["success"=>true,"message"=>"تم �
      */
     public function upload(Request $request,post $post)
     {
+        $this->authorize('update', $post);
       
         if ($request->hasFile("image")) {
 
@@ -98,6 +100,8 @@ return(PostResource::make($post)->additional(["success"=>true,"message"=>"تم �
      */
     public function update(PostRequest $request, post $post)
     {
+        $this->authorize('update', $post); 
+            
          $data=$request->validated();
         if ($request->hasFile("image")) {
         
@@ -117,6 +121,7 @@ return(PostResource::make($post)->additional(["success"=>true,"message"=>"تم �
      */
     public function destroy( post $post)
     {
+        $this->authorize('delete', $post);
         try{
             DB::beginTransaction();
             $path=$post->image;
